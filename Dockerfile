@@ -1,20 +1,21 @@
-Base image
+# Imagen base
 FROM node:18
 
-Crear directorio de trabajo
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-Copiar package.json y package-lock.json
+# Copiar archivos necesarios
 COPY package*.json ./
-
-Instalar dependencias
-RUN npm install
-
-Copiar el resto del código
 COPY . .
 
-Exponer el puerto (usá 3001 si es el que configuraste en tu .env)
+# Instalar dependencias
+RUN npm install
+
+# Exponer el puerto (ajustá si usás otro)
 EXPOSE 3001
 
-Comando de inicio
+# Variable de entorno por si usás dotenv
+ENV NODE_ENV=production
+
+# Comando de inicio
 CMD ["npm", "start"]
