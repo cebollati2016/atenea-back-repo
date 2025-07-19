@@ -1,9 +1,0 @@
-node_modules
-.next
-Dockerfile
-.dockerignore
-.git
-.github
-.vscode
-npm-debug.log
-.next/cache
