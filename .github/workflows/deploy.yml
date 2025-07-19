@@ -12,7 +12,7 @@ jobs:
 
     steps:
       
-name: Checkout repository
+name: Checkout code
       uses: actions/checkout@v3
 
       
@@ -29,11 +29,21 @@ name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
 
       
-name: Build, tag, and push Docker image to Amazon ECR
+name: Build and push Docker image to ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_BACK }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         IMAGE_TAG: latest
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+        docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      
+name: Deploy to Amazon ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: atenea-backend-task.json
+        service: atenea-backend-service
+        cluster: atenea-backend-cluster
+        wait-for-service-stability: true
