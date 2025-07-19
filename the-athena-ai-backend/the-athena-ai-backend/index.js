@@ -49,7 +49,7 @@ initWebSocket(server);
 // Swagger
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Puerto con valor por defecto
+// Puerto con valor 3001
 const PORT = process.env.PORT || 3001;
 
 server.listen(PORT, () => {
