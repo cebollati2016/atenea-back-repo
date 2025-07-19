@@ -16,17 +16,19 @@ import { swaggerSpec } from "./swagger.js";
 const app = express();
 const server = http.createServer(app);
 
+// Configuración de CORS
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: "http://localhost:8080/", // sin la barra al final
     credentials: true,
   })
 );
 
+// Middleware
 app.use(bodyParser.json());
-
 app.use(cookieParser());
 
+// Límite de tasa
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -40,13 +42,17 @@ app.use(
   })
 );
 
+// Rutas y WebSocket
 app.use("/api", routes);
 initWebSocket(server);
 
+// Swagger
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-const PORT = process.env.PORT;
+// Puerto con valor por defecto
+const PORT = process.env.PORT || 3001;
 
 server.listen(PORT, () => {
-  console.log("Server running at PORT: ", PORT);
+  console.log("Server running at PORT:", PORT);
 });
+
