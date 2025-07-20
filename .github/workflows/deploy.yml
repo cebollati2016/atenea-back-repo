@@ -3,7 +3,7 @@ name: Deploy Backend to AWS ECS
 on:
   push:
     branches:
-      - main  # <--- Línea 7 debe tener esta indentación exacta
+      - main  
 
 jobs:
   deploy:
