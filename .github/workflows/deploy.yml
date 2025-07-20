@@ -37,7 +37,7 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: backend-task-definition.json
-          service: atenea-backend-service
-          cluster: atenea-backend-cluster
+          service: ateneaback-servicef
+          cluster: ateneaback-cluster
           wait-for-service-stability: true
 
