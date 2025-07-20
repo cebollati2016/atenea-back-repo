@@ -4,7 +4,7 @@ FROM node:18
 # Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar archivos necesarios
+# Copiar archivos necesarios1
 COPY package*.json ./
 COPY . .
 
