@@ -1,18 +1,19 @@
 {
-  "family": "ateneaback-task",
+  "family": "atenea-backend-task",
   "networkMode": "awsvpc",
+  "executionRoleArn": "arn:aws:iam::586794473929:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
-      "name": "ateneaback",
+      "name": "atenea-backend-container",
       "image": "<ECR_URI>:<IMAGE_TAG>",
-      "essential": true,
       "portMappings": [
         {
           "containerPort": 3001,
           "hostPort": 3001,
           "protocol": "tcp"
         }
-      ]
+      ],
+      "essential": true
     }
   ],
   "requiresCompatibilities": ["FARGATE"],

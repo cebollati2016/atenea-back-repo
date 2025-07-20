@@ -9,6 +9,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      ECR_REPOSITORY: ateneaback
+      IMAGE_TAG: latest
+      TASK_DEF_FILE: ./the-athena-ai-backend/the-athena-ai-backend/backend-task-definition.json
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -25,26 +30,18 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build, tag, and push Docker image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ateneaback
-          IMAGE_TAG: latest
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./the-athena-ai-backend/the-athena-ai-backend
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG ./the-athena-ai-backend/the-athena-ai-backend
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Replace image URI in task definition
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ateneaback
-          IMAGE_TAG: latest
+      - name: Replace image URI in ECS task definition
         run: |
-          sed -i "s|<ECR_URI>:<IMAGE_TAG>|$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" backend-task-definition.json
+          sed -i "s|<ECR_URI>:<IMAGE_TAG>|${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG|g" $TASK_DEF_FILE
 
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: backend-task-definition.json
+          task-definition: ${{ env.TASK_DEF_FILE }}
           service: atenea-backend-service
           cluster: atenea-backend-cluster
           wait-for-service-stability: true
